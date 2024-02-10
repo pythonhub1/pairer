@@ -41,7 +41,7 @@ function App() {
                     // Remove the selected getter from the main getters array to avoid being selected again
                     getters = getters.filter(name => name !== getter);
                 } else {
-                    // In case there's no valid getter, which should be theoretically impossible in this setup
+                    // Note that no valid getter was found for the current giver, so we can try again
                     ++num_no_valid_getters
                     console.log("No valid getter found for:", giver);
                 }
