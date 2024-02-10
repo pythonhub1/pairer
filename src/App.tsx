@@ -5,13 +5,13 @@ function App() {
     const [names, setNames] = useState(""); // Names from the TextField
     const [pairs, setPairs] = useState(""); // Pairs to go into the results TextField
     const [pairSeparator, setPairSeparator] = useState(() => {
-      const savedSeparator = localStorage.getItem('pairSeparator');
-      return savedSeparator !== null ? savedSeparator : '|'; // Default pair separator
+        const savedSeparator = localStorage.getItem('pairSeparator');
+        return savedSeparator !== null ? savedSeparator : '|'; // Default pair separator
     });
 
     // Effect hook to update localStorage whenever pairSeparator changes
     useEffect(() => {
-      localStorage.setItem('pairSeparator', pairSeparator);
+        localStorage.setItem('pairSeparator', pairSeparator);
     }, [pairSeparator]);
 
     function handlePair() {
@@ -20,32 +20,39 @@ function App() {
 
         // Initialize givers and a copy for getters
         const givers = [...namesArray];
-        let getters = [...namesArray];
 
-        const newPairs: string[] = [];
+        while (true) {
+            let num_no_valid_getters = 0
+            let getters = [...namesArray];
 
-        givers.forEach(giver => {
-            // Filter the getters array to exclude the current giver
-            const possibleGetters = getters.filter(getter => getter !== giver);
+            const newPairs: string[] = [];
 
-            if (possibleGetters.length > 0) {
-                // Randomly select a getter from the list of possible getters
-                const randomIndex = Math.floor(Math.random() * possibleGetters.length);
-                const getter = possibleGetters[randomIndex];
+            givers.forEach(giver => {
+                // Filter the getters array to exclude the current giver
+                const possibleGetters = getters.filter(getter => getter !== giver);
 
-                // Add the pair
-                newPairs.push(`${giver}${pairSeparator}${getter}`);
+                if (possibleGetters.length > 0) {
+                    // Randomly select a getter from the list of possible getters
+                    const randomIndex = Math.floor(Math.random() * possibleGetters.length);
+                    const getter = possibleGetters[randomIndex];
+                    // Add the pair
+                    newPairs.push(`${giver}${pairSeparator}${getter}`);
 
-                // Remove the selected getter from the main getters array to avoid being selected again
-                getters = getters.filter(name => name !== getter);
-            } else {
-                // In case there's no valid getter, which should be theoretically impossible in this setup
-                console.error("No valid getter found for:", giver);
+                    // Remove the selected getter from the main getters array to avoid being selected again
+                    getters = getters.filter(name => name !== getter);
+                } else {
+                    // In case there's no valid getter, which should be theoretically impossible in this setup
+                    ++num_no_valid_getters
+                    console.log("No valid getter found for:", giver);
+                }
+            });
+
+            if (num_no_valid_getters === 0) {
+                // Join the paired names array back into a string, separated by newlines
+                setPairs(newPairs.join("\n"));
+                break
             }
-        });
-
-        // Join the paired names array back into a string, separated by newlines
-        setPairs(newPairs.join("\n"));
+        }
     }
 
     function handleCopy() {
