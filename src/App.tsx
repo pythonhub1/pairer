@@ -83,7 +83,7 @@ function App() {
                         setPairSeparator(e.target.value)
                     }}
                     sx={{
-                        maxWidth: '20%',
+                        maxWidth: '50%',
                     }}
                 />
                 <TextField
